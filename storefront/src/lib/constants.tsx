@@ -30,6 +30,10 @@ export const paymentInfoMap: Record<
     title: "Manual Payment",
     icon: <CreditCard />,
   },
+  pp_paynow_paynow: {
+    title: "Paynow",
+    icon: <CreditCard />,
+  },
   // Add more payment providers here
 }
 

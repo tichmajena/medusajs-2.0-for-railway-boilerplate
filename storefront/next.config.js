@@ -37,12 +37,12 @@ const nextConfig = {
       {
         // Note: can be removed after deleting demo products
         protocol: "https",
-        hostname: "bucket-production-5e59.up.railway.app",
+        hostname: "medusa-public-images.s3.eu-west-1.amazonaws.com",
       },
       {
-        // Note: can be removed after deleting demo products
+        // Note: Product Images products
         protocol: "https",
-        hostname: "medusa-public-images.s3.eu-west-1.amazonaws.com",
+        hostname: "bucket-production-5e59.up.railway.app",
       },
       {
         // Note: can be removed after deleting demo products
