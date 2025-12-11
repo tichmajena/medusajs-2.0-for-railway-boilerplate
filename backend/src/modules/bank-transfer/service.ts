@@ -22,18 +22,13 @@ import {
   ProviderWebhookPayload,
   WebhookActionResult,
 } from "@medusajs/framework/types";
-import {
-  paynowClient as paynow,
-  PaynowProduct,
-  PaynowResponse,
-} from "./client";
 
 type Options = {
   apiKey: string;
 };
 
-class PaynowProviderService extends AbstractPaymentProvider<Options> {
-  static identifier = "paynow";
+class BankTransferProviderService extends AbstractPaymentProvider<Options> {
+  static identifier = "bank_transfer";
 
   // you can inject resources like logger, etc.
   constructor(container: any, options: Options) {
@@ -97,37 +92,11 @@ class PaynowProviderService extends AbstractPaymentProvider<Options> {
     const { amount, currency_code, data, context } = input;
     console.log("[initiatePayment] context: ", input);
 
-    const { phone, operator, origin, user, reference }: any = data.session_data;
-
-    const payload: PaynowProduct = {
-      title: "Order",
-      lineTotal: parseFloat(amount as string),
+    return {
+      id: (data?.session_id as string) || "",
+      status: "pending",
+      data,
     };
-
-    const res: PaynowResponse = await paynow({
-      products: [payload],
-      phonenumber: phone,
-      mode: operator,
-      origin,
-      user,
-      reference,
-      currency: currency_code,
-    });
-    console.log("paynow res: ", res);
-    if (res.success) {
-      data.session_data = { ...(data.session_data as any), paynow: res };
-      return {
-        id: (data?.session_id as string) || "",
-        status: "pending",
-        data,
-      };
-    } else {
-      return {
-        id: (data?.session_id as string) || "",
-        status: "error",
-        data,
-      };
-    }
   }
 
   /**
@@ -263,4 +232,4 @@ class PaynowProviderService extends AbstractPaymentProvider<Options> {
   }
 }
 
-export default PaynowProviderService;
+export default BankTransferProviderService;

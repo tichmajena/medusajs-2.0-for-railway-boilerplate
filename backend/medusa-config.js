@@ -51,6 +51,13 @@ const medusaConfig = {
   },
   modules: [
     {
+      resolve: "./src/modules/brand",
+      options: {
+        enableUI: true,
+        isQueryable: true,
+      },
+    },
+    {
       key: Modules.FILE,
       resolve: "@medusajs/file",
       options: {
@@ -158,7 +165,7 @@ const medusaConfig = {
                 {
                   // path to your module provider
                   resolve: "./src/modules/paynow",
-                  id: "my-payment",
+                  id: "paynow",
                   options: {
                     apiKey: "...", // your gateway config
                   },
@@ -177,6 +184,14 @@ const medusaConfig = {
                   // path to your module provider
                   resolve: "./src/modules/paynow",
                   id: "paynow",
+                  options: {
+                    apiKey: "...", // your gateway config
+                  },
+                },
+                {
+                  // path to your module provider
+                  resolve: "./src/modules/bank-transfer",
+                  id: "bank_transfer",
                   options: {
                     apiKey: "...", // your gateway config
                   },

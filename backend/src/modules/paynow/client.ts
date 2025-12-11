@@ -1,29 +1,71 @@
+import { stat } from "fs";
 import { Paynow } from "paynow";
 
-export async function paynowClient(data, phonenumber, mode, origin) {
+export interface PaynowProduct {
+  title: string;
+  lineTotal: number;
+}
+
+export interface PaynowInput {
+  products: PaynowProduct[];
+  phonenumber: string;
+  mode: string;
+  origin: string;
+  user: string;
+  reference: string;
+  currency: string;
+}
+export interface PaynowResponse {
+  status: "ok" | "error";
+  success: boolean;
+  hasRedirect?: boolean;
+  isInnbucks?: boolean;
+  pollUrl?: string;
+  instructions?: string;
+}
+
+export async function paynowClient({
+  products,
+  phonenumber,
+  mode,
+  origin,
+  user,
+  reference,
+  currency,
+}: PaynowInput): Promise<PaynowResponse> {
   const PAYNOW_ID = process.env.PAYNOW_ID;
   const PAYNOW_KEY = process.env.PAYNOW_KEY;
+  const PAYNOW_USD_ID = process.env.PAYNOW_USD_ID;
+  const PAYNOW_USD_KEY = process.env.PAYNOW_USD_KEY;
   const PAYNOW_AUTH_EMAIL = process.env.PAYNOW_AUTH_EMAIL;
-
-  const products = [data];
 
   console.log({ phonenumber, mode });
   // const authEmail = req.query.authEmail;
   // const reference = req.query.reference;
+  const ref = `?phone=${phonenumber}&mode=${mode}&host=${origin}&user=${user}`;
+  const usds = ["ecocash-usd", "innbucks", "v-payments-usd", "visa-mastercard"];
 
   // Create instance of Paynow class
-  const paynow = new Paynow(PAYNOW_ID, PAYNOW_KEY);
+  const paynow =
+    currency.toLowerCase() === "usd" || usds.indexOf(mode) > -1
+      ? new Paynow(PAYNOW_USD_ID, PAYNOW_USD_KEY)
+      : new Paynow(PAYNOW_ID, PAYNOW_KEY);
 
   // Set return and result urls
-  paynow.resultUrl = `${origin}/api/paynow`;
-  paynow.returnUrl = `${origin}/app/checkout?gateway=paynow&merchantReference=1234`;
+  let url = origin || "paynow-vercel.app";
+  const dev = url.includes("localhost");
+  //url = host;
+  paynow.resultUrl = `https://${url}/api/paynow-result${ref}`;
+  paynow.returnUrl = `http${
+    dev ? "" : "s"
+  }://${url}/api/paynow-return?gateway=paynow&merchantReference=${reference}`;
 
   // Create a new payment
-  let payment = paynow.createPayment("Invoice 35");
+  let payment = paynow.createPayment(reference || "Invoice");
 
   // Add items to the payment list passing in the name of the item and it's price
   products.forEach((product) => {
-    payment.add(product.title, parseFloat(product.lineTotal));
+    payment.add(product.title, +product.lineTotal);
   });
 
   payment.authEmail = PAYNOW_AUTH_EMAIL;
@@ -53,64 +95,45 @@ export async function paynowClient(data, phonenumber, mode, origin) {
 
   // -----------------------------------------------------
 
-  if (mode === "ecocash" || mode === "onemoney" || mode === "telecash") {
-    paynow
-      .sendMobile(
+  if (
+    mode === "ecocash" ||
+    mode === "ecocash-usd" ||
+    mode === "innbucks" ||
+    mode === "onemoney" ||
+    mode === "onemoney-usd" ||
+    mode === "telecash"
+  ) {
+    payment.authEmail = PAYNOW_AUTH_EMAIL;
+    console.log("Payment: ", payment);
+
+    try {
+      const response = await paynow.sendMobile(
         // The payment to send to Paynow
         payment,
-
         // The phone number making payment
         phonenumber,
-        //'0780597382',
-
         // The mobile money method to use.
-        mode
-      )
-      .then(function (response) {
-        console.log(response);
-        if (response.success) {
-          // These are the instructions to show the user.
-          // Instruction for how the user can make payment
-          let instructions = response.instructions; // Get Payment instructions for the selected mobile money method
+        mode.replace("-usd", "")
+      );
 
-          console.log(response);
-          let pollUrl = response.pollUrl;
+      console.log(response);
 
-          // Get poll url for the transaction. This is the url used to check the status of the transaction.
-          // You might want to save this, we recommend you do it
-
-          console.log(pollUrl);
-          return { instructions, pollUrl };
-        } else {
-          console.log("RESPONSE ERROR", response.error);
-          return { error: response.error };
-        }
-      })
-      .catch((ex) => {
-        // Ahhhhhhhhhhhhhhh
-        // *freak out*
-        console.log("Your application has broken an axle", ex);
-        return {};
-      });
+      return response;
+    } catch (ex) {
+      console.log("Your application has broken an axle", ex);
+      return { status: "error", success: false };
+    }
   } else {
-    paynow
-      .send(payment)
-      .then((response) => {
-        console.log(response);
-        if (response.success) {
-          let redirectUrl = response.redirectUrl;
-          let pollUrl = response.pollUrl;
-
-          return { instructions: "", redirectUrl, pollUrl };
-        }
-      })
-      .catch((err) => {
-        // Ahhhhh
-        // *freaks out*
-        console.log("your app has broken an axle", err);
-        return {};
-      });
+    try {
+      const response = await paynow.send(payment);
+      console.log(response);
+      return response;
+    } catch (err) {
+      console.log("your app has broken an axle", err);
+      return { status: "error", success: false };
+    }
   }
+
   // try {
   //   const res = await fetch(
   //     `https://paynow-vercel.vercel.app/api/paynow?phone=${phonenumber}&mode=${mode}`,
@@ -134,5 +157,4 @@ export async function paynowClient(data, phonenumber, mode, origin) {
   //   console.error(err);
   //   return null;
   // }
-  return {};
 }
