@@ -34,16 +34,15 @@ Combine Medusa's modules for your commerce backend with the newest Next.js 14 fe
   <a href="https://github.com/rpuls/medusa-b2b-for-railway/">Checkout the new B2B quickstart for Railway repository</a>
 </h3>
 
-
-
 ## About this boilerplate
+
 This boilerplate is a monorepo consisting of the officially released MedusaJS 2.0 backend and storefront application. It is a pre-configured, ready-to-deploy solution, modified for seamless deployment on [railway.app](https://railway.app?referralCode=-Yg50p).
 
-Updated: to `version 2.10.2` 🥳
+Updated: to `version 2.12.1` 🥳
 
 ## Deploy with no manual setup in minutes
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/gkU-27?referralCode=-Yg50p)
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/gkU-27?referralCode=-Yg50p)
 
 ## Preconfigured 3rd party integrations
 
@@ -55,16 +54,18 @@ Updated: to `version 2.10.2` 🥳
 # local setup
 
 ## Backend
+
 Video instructions: https://youtu.be/PPxenu7IjGM
 
 - `cd backend/`
 - `pnpm install` or `npm i`
-- Rename `.env.template` ->  `.env`
+- Rename `.env.template` -> `.env`
 - To connect to your online database from your local machine, copy the `DATABASE_URL` value auto-generated on Railway and add it to your `.env` file.
   - If connecting to a new database, for example a local one, run `pnpm ib` or `npm run ib` to seed the database.
 - `pnpm dev` or `npm run dev`
 
 ### requirements
+
 - **postgres database** (Automatic setup when using the Railway template)
 - **redis** (Automatic setup when using the Railway template) - fallback to simulated redis.
 - **MinIO storage** (Automatic setup when using the Railway template) - fallback to local storage.
@@ -78,23 +79,27 @@ Video instructions: https://youtu.be/PPxenu7IjGM
 `pnpm build && pnpm start` will compile the project and run from compiled source. This can be useful for reproducing issues on your cloud instance.
 
 ## Storefront
+
 Video instructions: https://youtu.be/PPxenu7IjGM
 
 - `cd storefront/
 - Install dependencies `npm i` or `pnpm i`
-- Rename `.env.local.template` ->  `.env.local`
+- Rename `.env.local.template` -> `.env.local`
 
 ### requirements
+
 - A running backend on port 9000 is required to fetch product data and other information needed to build Next.js pages.
 
 ### commands
+
 `cd storefront/`
 `npm run dev` or `pnpm dev` will run the storefront on uncompiled code, with hot-reloading as files are saved with changes.
 
 ## Useful resources
+
 - How to setup credit card payment with Stripe payment module: https://youtu.be/dcSOpIzc1Og
 - https://funkyton.com/medusajs-2-0-is-finally-here/#succuessfully-deployed-whats-next
-  
+
 <p align="center">
   <a href="https://funkyton.com/">
     <div style="text-align: center;">

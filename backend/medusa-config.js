@@ -41,7 +41,7 @@ const medusaConfig = {
     },
     build: {
       rollupOptions: {
-        external: ["@medusajs/dashboard"],
+        external: ["@medusajs/dashboard", "@medusajs/admin-shared"],
       },
     },
   },
@@ -50,13 +50,6 @@ const medusaConfig = {
     disable: SHOULD_DISABLE_ADMIN,
   },
   modules: [
-    {
-      resolve: "./src/modules/brand",
-      options: {
-        enableUI: true,
-        isQueryable: true,
-      },
-    },
     {
       key: Modules.FILE,
       resolve: "@medusajs/file",
@@ -162,44 +155,11 @@ const medusaConfig = {
                     webhookSecret: STRIPE_WEBHOOK_SECRET,
                   },
                 },
-                {
-                  // path to your module provider
-                  resolve: "./src/modules/paynow",
-                  id: "paynow",
-                  options: {
-                    apiKey: "...", // your gateway config
-                  },
-                },
               ],
             },
           },
         ]
-      : [
-          {
-            key: Modules.PAYMENT,
-            resolve: "@medusajs/payment",
-            options: {
-              providers: [
-                {
-                  // path to your module provider
-                  resolve: "./src/modules/paynow",
-                  id: "paynow",
-                  options: {
-                    apiKey: "...", // your gateway config
-                  },
-                },
-                {
-                  // path to your module provider
-                  resolve: "./src/modules/bank-transfer",
-                  id: "bank_transfer",
-                  options: {
-                    apiKey: "...", // your gateway config
-                  },
-                },
-              ],
-            },
-          },
-        ]),
+      : []),
   ],
   plugins: [
     ...(MEILISEARCH_HOST && MEILISEARCH_ADMIN_KEY

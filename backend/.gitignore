@@ -5,7 +5,6 @@
 /node_modules
 yarn-error.log
 .medusa-copy
-.medusa
 /.idea
 static
 coverage
