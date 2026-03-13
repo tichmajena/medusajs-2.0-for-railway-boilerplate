@@ -4,7 +4,10 @@ import { clx, Container, Heading, Text } from "@medusajs/ui";
 import { useQuery } from "@tanstack/react-query";
 import { sdk } from "../lib/sdk.js";
 import { ActionMenu } from "../components/action-menu";
+import { CreateForm } from "../components/create-brand-form";
+import { SelectBrandForm } from "../components/select-brand-form";
 import { Pencil } from "@medusajs/icons"
+import { useState } from "react";
 
 
 type AdminProductBrand = AdminProduct & {
@@ -17,6 +20,8 @@ type AdminProductBrand = AdminProduct & {
 const ProductBrandWidget = ({
   data: product,
 }: DetailWidgetProps<AdminProduct>) => {
+  //console.log(product);
+  
   const { data: queryResult } = useQuery({
     queryFn: () =>
       sdk.admin.product.retrieve(product.id, {
@@ -25,27 +30,13 @@ const ProductBrandWidget = ({
     queryKey: [["product", product.id]],
   });
   const brandName = (queryResult?.product as AdminProductBrand)?.brand?.name;
-
+    
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <div className="flex items-center justify-between">
+        <div className="flex w-full items-center justify-between">
           <Heading level="h2">Brand</Heading>
-          <ActionMenu
-            groups={[
-              {
-                actions: [
-                  {
-                    icon: <Pencil />,
-                    label: "Edit",
-                    onClick: () => {
-                      alert("You clicked the edit action!");
-                    },
-                  },
-                ],
-              },
-            ]}
-          />
+         <SelectBrandForm product={queryResult.product}/>
         </div>
       </div>
       <div
@@ -66,6 +57,7 @@ const ProductBrandWidget = ({
         </Text>
       </div>
     </Container>
+    
   );
 };
 
