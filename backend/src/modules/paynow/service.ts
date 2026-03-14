@@ -45,7 +45,7 @@ class PaynowProviderService extends AbstractPaymentProvider<Options> {
   // TODO: implement required methods for authorize, capture, refund, etc.
 
   async authorizePayment(
-    input: AuthorizePaymentInput
+    input: AuthorizePaymentInput,
   ): Promise<AuthorizePaymentOutput> {
     const { data: paymentSessionData, context } = input;
 
@@ -84,14 +84,14 @@ class PaynowProviderService extends AbstractPaymentProvider<Options> {
     throw new Error("[authorizePayment] Method not implemented.");
   }
   async cancelPayment(
-    input: CapturePaymentInput
+    input: CapturePaymentInput,
   ): Promise<CapturePaymentOutput> {
     console.debug("[cancelPayment] was called.");
     throw new Error("Method not implemented.");
   }
   //* Initiate the building of paymentSessionData
   async initiatePayment(
-    input: InitiatePaymentInput
+    input: InitiatePaymentInput,
   ): Promise<InitiatePaymentOutput> {
     console.debug("[initiatePayment] was called.");
     const { amount, currency_code, data, context } = input;
@@ -122,6 +122,7 @@ class PaynowProviderService extends AbstractPaymentProvider<Options> {
         data,
       };
     } else {
+      data.session_data = { ...(data.session_data as any), paynow: res };
       return {
         id: (data?.session_id as string) || "",
         status: "error",
@@ -135,7 +136,7 @@ class PaynowProviderService extends AbstractPaymentProvider<Options> {
    * So this just returns the payment session data.
    */
   async capturePayment(
-    input: CapturePaymentInput
+    input: CapturePaymentInput,
   ): Promise<CapturePaymentOutput> {
     const { data: paymentSessionData } = input;
     console.debug("[capturePayment] was called.");
@@ -177,12 +178,12 @@ class PaynowProviderService extends AbstractPaymentProvider<Options> {
   }
 
   async getPaymentStatus(
-    input: GetPaymentStatusInput
+    input: GetPaymentStatusInput,
   ): Promise<GetPaymentStatusOutput> {
     const { data: paymentSessionData } = input;
     console.debug(
       "[getPaymentStatus] was called.",
-      paymentSessionData.session_data
+      paymentSessionData.session_data,
     );
     console.debug("[getPaymentStatus] was called.", paymentSessionData);
     //TODO: Figure this one out
@@ -207,7 +208,7 @@ class PaynowProviderService extends AbstractPaymentProvider<Options> {
    * Retrieve transaction data from Paystack.
    */
   async retrievePayment(
-    input: RetrievePaymentInput
+    input: RetrievePaymentInput,
   ): Promise<RetrievePaymentOutput> {
     const { data } = input;
     console.debug("[retrievePayment] was called.");
@@ -217,7 +218,7 @@ class PaynowProviderService extends AbstractPaymentProvider<Options> {
   }
 
   async getWebhookActionAndData(
-    payload: ProviderWebhookPayload["payload"]
+    payload: ProviderWebhookPayload["payload"],
   ): Promise<WebhookActionResult> {
     const { data, rawData, headers } = payload;
 

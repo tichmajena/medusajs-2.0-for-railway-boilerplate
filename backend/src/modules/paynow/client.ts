@@ -113,7 +113,7 @@ export async function paynowClient({
         // The phone number making payment
         phonenumber,
         // The mobile money method to use.
-        mode.replace("-usd", "")
+        mode.replace("-usd", ""),
       );
 
       console.log(response);
