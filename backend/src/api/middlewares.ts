@@ -28,6 +28,16 @@ export default defineMiddlewares({
       ],
     },
     {
+      matcher: "/store/brands",
+      method: "GET",
+      middlewares: [
+        validateAndTransformQuery(GetBrandsSchema, {
+          defaults: ["id", "name"],
+          isList: true,
+        }),
+      ],
+    },
+    {
       matcher: "/admin/products",
       method: ["POST"],
       additionalDataValidator: {
