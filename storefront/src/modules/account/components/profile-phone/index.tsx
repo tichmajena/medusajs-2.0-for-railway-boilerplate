@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect } from "react"
-import { useActionState } from "react-dom"
+import { useActionState } from "react"
 
 import Input from "@modules/common/components/input"
 
