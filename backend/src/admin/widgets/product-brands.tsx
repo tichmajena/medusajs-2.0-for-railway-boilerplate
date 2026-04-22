@@ -36,7 +36,7 @@ const ProductBrandWidget = ({
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex w-full items-center justify-between">
           <Heading level="h2">Brand</Heading>
-         <SelectBrandForm product={queryResult.product}/>
+         <SelectBrandForm product={queryResult?.product}/>
         </div>
       </div>
       <div

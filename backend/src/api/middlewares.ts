@@ -4,6 +4,7 @@ import {
   validateAndTransformQuery,
 } from "@medusajs/framework/http";
 import { PostAdminCreateBrand } from "./admin/brands/validators";
+import { PostAdminCreateProduct } from "./store/products/validators";
 import { createFindParams } from "@medusajs/medusa/api/utils/validators";
 
 import z from "zod";
@@ -36,6 +37,11 @@ export default defineMiddlewares({
           isList: true,
         }),
       ],
+    },
+    {
+      matcher: "/store/product",
+      method: ["POST"],
+      middlewares: [validateAndTransformBody(PostAdminCreateProduct)],
     },
     {
       matcher: "/admin/products",

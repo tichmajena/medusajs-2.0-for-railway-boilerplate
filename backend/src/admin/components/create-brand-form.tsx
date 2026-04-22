@@ -40,7 +40,7 @@ export const CreateForm = () => {
   const handleSubmit = form.handleSubmit(({ name }) => {
     // TODO: submit to backend
     createBrand.mutate(name);
-    console.log(name);
+   // console.log(name);
   });
 
   return (
