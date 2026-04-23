@@ -18,41 +18,50 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   const default_location_id = stores[0].default_location_id;
   // Create inventory item with stocked quantity at a location
 
-  const productsWithInventory = products.map((product) => {
-    const inventoryItems = createInventoryItemsWorkflow.runAsStep({
-      input: {
-        items: product.variants.map((variant) => {
-          return {
-            sku: variant.sku,
-            title: variant.title,
-            location_levels: [
-              {
-                location_id: default_location_id, // your stock location ID
-                stocked_quantity: variant.stocked_quantity || 50,
-              },
-            ],
-          };
-        }),
-      },
-    });
+  const productsWithInventory = await Promise.all(
+    products.map(async (product) => {
+      const { result: inventoryItems } = await createInventoryItemsWorkflow(
+        req.scope,
+      ).run({
+        input: {
+          items: product.variants.map((variant) => {
+            return {
+              sku: variant.sku,
+              title: variant.title,
+              location_levels: [
+                {
+                  location_id: default_location_id, // your stock location ID
+                  stocked_quantity: variant.stocked_quantity || 50,
+                },
+              ],
+            };
+          }),
+        },
+      });
 
-    // Prepare inventory item IDs to pass to the variant
-    const inventoryItemIds = transform({ inventoryItems }, (data) => {
-      return data.inventoryItems.map((item) => ({
+      // Prepare inventory item IDs to pass to the variant
+      // const inventoryItemIds = transform({ inventoryItems }, (data) => {
+      //   return data.inventoryItems.map((item) => ({
+      //     inventory_item_id: item.id,
+      //     required_quantity: 1,
+      //   }));
+      // });
+
+      const inventoryItemIds = inventoryItems.map((item) => ({
         inventory_item_id: item.id,
         required_quantity: 1,
       }));
-    });
 
-    return {
-      ...product,
-      variants: product.variants.map(
-        ({ stocked_quantity, ...variant }, i: number) => {
-          return { ...variant, inventory_items: [inventoryItemIds[i]] };
-        },
-      ),
-    };
-  });
+      return {
+        ...product,
+        variants: product.variants.map(
+          ({ stocked_quantity, ...variant }, i: number) => {
+            return { ...variant, inventory_items: [inventoryItemIds[i]] };
+          },
+        ),
+      };
+    }),
+  );
 
   const { result } = await createProductsWorkflow(req.scope).run({
     input: { products: productsWithInventory },
