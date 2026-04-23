@@ -5,7 +5,7 @@ import {
   createProductsWorkflow,
   useQueryGraphStep,
 } from "@medusajs/medusa/core-flows";
-import { Product } from "./validators";
+// import { Product } from "./validators";
 
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   // Retrieve default store config
@@ -14,7 +14,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     fields: ["default_sales_channel_id", "default_location_id"],
   });
 
-  const { products } = req.validatedBody as { products: Product[] };
+  const { products } = req.validatedBody;
   const default_location_id = stores[0].default_location_id;
   // Create inventory item with stocked quantity at a location
 
