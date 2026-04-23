@@ -6,11 +6,11 @@ const variantSchema = z.object({
   manage_inventory: z.boolean(),
   allow_backorder: z.boolean(),
   stocked_quantity: z.number()?.optional(),
-  invetory_items: z
+  inventory_items: z
     .array(
       z.object({
         inventory_item_id: z.string(),
-        required_quantity: z.string(),
+        required_quantity: z.number(),
       }),
     )
     .optional(),
