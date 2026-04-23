@@ -37,11 +37,14 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
             })),
           },
         });
+      console.log({ createdInventoryItems });
 
       const inventoryItemIds = createdInventoryItems.map((item) => ({
         inventory_item_id: item.id,
         required_quantity: 1,
       }));
+
+      console.log({ inventoryItemIds });
 
       return {
         ...product,
