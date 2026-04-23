@@ -5,6 +5,8 @@ export const PostAdminCreateProduct = z.object({
     z.object({
       title: z.string(),
       status: z.string(),
+
+      description: z.string(),
       options: z.array(
         z.object({
           title: z.string(),
@@ -26,6 +28,16 @@ export const PostAdminCreateProduct = z.object({
         }),
       ),
       shipping_profile_id: z.string(),
+      sales_channels: z.array(
+        z.object({
+          id: z.string(),
+        }),
+      ),
+      brand: z
+        .object({
+          id: z.string(),
+        })
+        .nullable(),
     }),
   ),
 });
