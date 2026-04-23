@@ -14,12 +14,12 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     fields: ["default_sales_channel_id", "default_location_id"],
   });
 
-  const { products } = req.validatedBody;
+  const body = req.validatedBody as any;
   const default_location_id = stores[0].default_location_id;
   // Create inventory item with stocked quantity at a location
 
   const productsWithInventory = await Promise.all(
-    products.map(async (product) => {
+    body?.products?.map(async (product) => {
       const { result: inventoryItems } = await createInventoryItemsWorkflow(
         req.scope,
       ).run({
@@ -64,7 +64,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   );
 
   const { result } = await createProductsWorkflow(req.scope).run({
-    input: { products: productsWithInventory },
+    input: { products: productsWithInventory } as any,
   });
 
   res.send(result);
