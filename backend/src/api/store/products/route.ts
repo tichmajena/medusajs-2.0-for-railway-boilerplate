@@ -3,13 +3,14 @@ import {
   createInventoryItemsWorkflow,
   createProductsWorkflow,
   CreateProductsWorkflowInput,
-  useQueryGraphStep,
 } from "@medusajs/medusa/core-flows";
 import { Product } from "./validators";
 
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
+  const query = req.scope.resolve("query");
+
   // Retrieve default store config
-  const { data: stores } = useQueryGraphStep({
+  const { data: stores } = await query.graph({
     entity: "store",
     fields: ["default_sales_channel_id", "default_location_id"],
   });
