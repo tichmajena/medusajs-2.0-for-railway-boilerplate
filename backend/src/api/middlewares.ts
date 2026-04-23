@@ -39,7 +39,7 @@ export default defineMiddlewares({
       ],
     },
     {
-      matcher: "/store/product",
+      matcher: "/store/products",
       method: ["POST"],
       middlewares: [validateAndTransformBody(PostAdminCreateProduct)],
     },
