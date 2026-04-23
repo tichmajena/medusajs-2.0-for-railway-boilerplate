@@ -2,6 +2,7 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 import {
   createInventoryItemsWorkflow,
   createProductsWorkflow,
+  CreateProductsWorkflowInput,
   useQueryGraphStep,
 } from "@medusajs/medusa/core-flows";
 import { Product } from "./validators";
@@ -52,7 +53,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   );
 
   const { result } = await createProductsWorkflow(req.scope).run({
-    input: { products: productsWithInventory },
+    input: { products: productsWithInventory } as CreateProductsWorkflowInput,
   });
 
   res.send(result);
