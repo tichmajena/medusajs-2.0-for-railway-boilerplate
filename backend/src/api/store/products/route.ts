@@ -15,6 +15,8 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     fields: ["default_sales_channel_id", "default_location_id"],
   });
 
+  console.log({ stores });
+
   const { products } = req.validatedBody as { products: Product[] };
   const default_location_id = stores[0].default_location_id;
 
@@ -52,6 +54,8 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
       };
     }),
   );
+
+  console.log({ productsWithInventory });
 
   const { result } = await createProductsWorkflow(req.scope).run({
     input: { products: productsWithInventory } as CreateProductsWorkflowInput,
